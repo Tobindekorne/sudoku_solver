@@ -1,3 +1,30 @@
+<<<<<<< Updated upstream
+=======
+import os
+import re
+import time
+import typing
+
+def get_possibilities(board, pos):
+    """gets all possible numbers that will work in the given position"""
+    possibilities = []
+    for current_number in range(1, len(board) + 1):
+        if valid(board, current_number, pos):
+            possibilities.append(current_number)
+    return possibilities
+
+def solve_with_possibilities(board):
+    filled = False
+    find = find_empty(board)
+    while find:
+        possibilities = get_possibilities(board, find)
+        if len(possibilities) == 1:
+            board[find[0]][find[1]] = possibilities[0]
+            filled = True
+        find = find_empty_from(board, find)
+    return filled
+    
+>>>>>>> Stashed changes
 def solve_puzzle(board):
     """
     Uses the backtracking algorithm to solve the sudoku puzzle
@@ -74,6 +101,20 @@ def find_empty(board):
                 return (i, j) # row, col
     return None
 
+def find_empty_from(board, pos):
+    """Returns the next empty cell in the board or None if there are no empty cells"""
+    if pos[1] + 1 == len(board):
+        row = pos[0] + 1
+        col = 0
+    else:
+        row = pos[0]
+        col = pos[1] + 1
+    for row in range(row, len(board)):
+        for column in range(col, len(board[0])):
+            if board[row][column] == 0:
+                return (row, column)
+    return None
+
 def load_puzzles():
     import os
     import re
@@ -105,6 +146,29 @@ def solve_puzzles(puzzles):
             print("#"*(len(puzzle)*3))
             print_board(puzzle)
 
+
+def solve_puzzles_with_posibilities(puzzles):
+    for tuple in all_puzzles:
+        puzzle_name = tuple[0]
+        puzzle = tuple[1]
+        puzzle_name = puzzle_name[:-4]
+        print("\n\nStarting puzzle " + puzzle_name + ":\n" + "#" * (len(puzzle) * 3))
+        print_board(puzzle)
+        while solve_with_possibilities(puzzle):
+            print("solving")
+        if find_empty(puzzle):
+            if not solve_puzzle(puzzle):
+                print("No solution was found for " + puzzle_name)
+            else:
+                print("\nsolution for " + puzzle_name + " is:")
+                print("#"*(len(puzzle)*3))
+                print_board(puzzle)
+        else:
+            print("\nsolution was found for " + puzzle_name + " using just single possibilities:")
+            print("#"*(len(puzzle)*3))
+            print_board(puzzle)
+        
+
 ######################################################################
 #                           RUN TEST CASES                           #
 ######################################################################
@@ -113,5 +177,6 @@ if __name__ == '__main__':
     import time
     start_time = time.time()
     all_puzzles = load_puzzles()
-    solve_puzzles(all_puzzles)
+    solve_puzzles_with_posibilities(all_puzzles)
+    # solve_puzzles(all_puzzles)
     print("time spent: " + str(time.time() - start_time))
