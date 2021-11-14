@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import os
 import re
 import time
@@ -23,8 +21,7 @@ def solve_with_possibilities(board):
             filled = True
         find = find_empty_from(board, find)
     return filled
-    
->>>>>>> Stashed changes
+
 def solve_puzzle(board):
     """
     Uses the backtracking algorithm to solve the sudoku puzzle
